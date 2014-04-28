@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name = "motechjavasphinx",
     packages = ["motechjavasphinx"],
-    version = "0.1",
+    version = "0.2",
     author = "Grameen Foundation",
     author_email = "rlarubbio@grameenfoundation.org",
     url = "http://github.com/motech/motechjavasphinx",

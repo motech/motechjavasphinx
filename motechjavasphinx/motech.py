@@ -64,7 +64,6 @@ def find_source_files(input_path, export_packages):
                 package = get_package(full_filename)
 
                 if package in export_packages:
-                    print "Dirpath: %s Filename: %s" % (dirpath, filename)
                     java_files.append(full_filename)
 
 
