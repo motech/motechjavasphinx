@@ -88,15 +88,37 @@ def get_package(source_file):
 
     return package
 
+def find_input_path():
+    """ Walks backwards (two levels) until it locates the root pom.xml.  This allows the 
+    module to run from multiple folder depths within the docs tree
+    """
+    if os.path.exists("../pom.xml"):
+        return "../"
+
+    if os.path.exists("../../pom.xml"):
+        return "../../"
+
+def get_dest_dir():
+    """ When run via the makefile we run one directory below conf.py so our destdir will
+    be 'source/' however when run from read the docs we are executed in the source dir so
+    our dest dir is './'
+    """
+
+    if os.path.exists("conf.py"):
+        return "./"
+
+    if os.path.exists("source/conf.py"):
+        return "source/"
+
 def execute_javasphinx(app):
     """ Clean the existing sphinx source files, collect the java source files that
     should be documented and run javasphinx on them.
     """
     Options = namedtuple('Options', ['suffix', 'destdir', 'force', 'update'])
-    opts = Options(suffix = "txt", destdir = "source/",
+    opts = Options(suffix = "txt", destdir = get_dest_dir(),
                    force = False, update = False)
 
-    input_path = "../"
+    input_path = find_input_path()
 
     filename = "%spackages.%s" % (opts.destdir, opts.suffix)
     if os.path.exists(filename):
