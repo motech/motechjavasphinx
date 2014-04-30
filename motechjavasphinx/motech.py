@@ -7,6 +7,18 @@ import os
 import shutil
 import xml.etree.ElementTree as xml
 
+def expand_package_wildcard(dirpath, package):
+    """ If an export package ends in a wildcard we need to look at the filesystem to
+    expand the wildcard
+    """
+
+    package_elements = package.split(".")[:-1]
+
+    path_prefix = dirpath + '/' + '/'.join(['src','main', 'java']) 
+    path = path_prefix + "/" + '/'.join(package_elements)
+
+    return [x[len(path_prefix) + 1:].replace("/", ".") for x in  [x[0] for x in os.walk(path)]]
+
 def extract_export_packages(input_path):
     """ Search through all the poms building a list of the packages that are exported
     """
@@ -40,7 +52,20 @@ def extract_export_packages(input_path):
                             export_str = export_node.text
 
                             for str in export_str.split(","):
-                                export_packages.append(str.strip().split(";")[0])
+                                package = str.strip().split(";")[0]
+
+                                if str.startswith("!"):
+                                    continue
+
+                                # If the include is a wildcard find all the actual packages
+                                if package.endswith(".*"):
+                                    packages = expand_package_wildcard(dirpath, package)
+
+                                    for package in packages:
+                                        export_packages.append(package)
+
+                                else:
+                                    export_packages.append(package)
 
     return export_packages
 
