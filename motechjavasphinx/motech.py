@@ -140,7 +140,7 @@ def execute_javasphinx(app):
     should be documented and run javasphinx on them.
     """
     Options = namedtuple('Options', ['suffix', 'destdir', 'force', 'update'])
-    opts = Options(suffix = "txt", destdir = get_dest_dir(),
+    opts = Options(suffix = "rst", destdir = get_dest_dir(),
                    force = False, update = False)
 
     input_path = find_input_path()
