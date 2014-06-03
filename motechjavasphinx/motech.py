@@ -88,9 +88,8 @@ def find_source_files(input_path, export_packages):
 
                 package = get_package(full_filename)
 
-                if package in export_packages:
+                if package in export_packages or filename == "package-info.java":
                     java_files.append(full_filename)
-
 
     return java_files
 
