@@ -26,9 +26,11 @@ def extract_export_packages(input_path):
     export_packages = []
 
     input_path = os.path.normpath(os.path.abspath(input_path))
+	
+    exclude_paths = ["archetypes", os.path.join("src", "test", "java")]
 
     for dirpath, dirnames, filenames in os.walk(input_path):
-        if "archetypes" in dirpath or "src/test/java" in dirpath:
+        if any(p for p in exclude_paths if p in dirpath):
             continue
 
         for filename in filenames:
@@ -78,10 +80,12 @@ def find_source_files(input_path, export_packages):
 
     input_path = os.path.normpath(os.path.abspath(input_path))
 
+    exclude_paths = ["archetypes", os.path.join("src", "test", "java"), (os.sep + "test" + os.sep), (os.sep + "testing" + os.sep), "-test-"]
+
     for dirpath, dirnames, filenames in os.walk(input_path):
         for filename in filenames:
             if filename.endswith(".java"):
-                if "archetypes" in dirpath or "src/test/java" in dirpath or "/test/" in dirpath or "/testing/" in dirpath or "-test-" in dirpath:
+                if any(p for p in exclude_paths if p in dirpath):
                     continue
 
                 full_filename = os.path.join(dirpath, filename)
@@ -106,7 +110,7 @@ def get_package(source_file):
         ast = javalang.parse.parse(source)
         package = ast.package.name
     except javalang.parser.JavaSyntaxError, e:
-        print('Syntax error in %s: %s' % source_file, format_syntax_error(e))
+        print('Syntax error in %s: %s' % (source_file, apidoc.format_syntax_error(e)))
     except Exception:
         print('Unexpected exception while parsing %s' % source_file)
 
